@@ -111,4 +111,44 @@ class NotesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function preparationAffichage()
+    {
+        //filieres
+        $this->loadModel('Filieres');
+        $all_filieres = $this->Filieres->find();
+        $filieres_labels = array();
+        foreach ($all_filieres as $f) { $filieres_labels[] = $f->libile; }
+        //niveaux
+        $this->loadModel('Niveaus');
+        $all_niveaux = $this->Niveaus->find();
+        $niveaux_labels = array();
+        foreach ($all_niveaux as $n) { $niveaux_labels[] = $n->libile; }
+        //semestres
+        $this->loadModel('Semestres');
+        $all_semestres = $this->Semestres->find();
+        $semestres_labels = array();
+        foreach ($all_semestres as $s) { $semestres_labels[] = $s->libile; }
+        //modules
+        $this->loadModel('Modules');
+        $all_modules = $this->Modules->find();
+        $modules_labels = array();
+        foreach ($all_modules as $m) { $modules_labels[] = $m->libile; }
+        $this->loadModel('Elements');
+        $all_elements = $this->Elements->find();
+        $elements_labels = array();
+        foreach ($all_elements as $e) { $elements_labels[] = $e->libile; }
+        //passer les arguments
+        $this->set(compact('filieres_labels',
+                            'niveaux_labels',
+                            'semestres_labels',
+                            'modules_labels',
+                            'elements_labels'));
+    }
+
+    public function affichage()
+    {
+        debug($this->request->data);
+    }
+
 }
