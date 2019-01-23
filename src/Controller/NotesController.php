@@ -114,6 +114,33 @@ class NotesController extends AppController
 
     public function preparationAffichage()
     {
+        $etape = 0;
+        $f = 0;
+        $n = 0;
+        if($this->request->is('post')){
+            if(isset($this->request->data['filiere'])){
+                $f = $this->request->data['filiere'];
+                $etape = 1;
+            }
+            if(isset($this->request->data['niveau'])){
+                $n = $this->request->data['niveau'];
+                $etape = 2;
+            }
+            if(isset($this->request->data['semestre'])){
+                $s = $this->request->data['semestre'];
+                $etape = 3;
+            }
+            if(isset($this->request->data['module'])){
+                $n = $this->request->data['module'];
+                $etape = 4;
+            }
+            if(isset($this->request->data['element'])){
+                $n = $this->request->data['element'];
+                $etape = 5;
+            }
+        }
+        
+
         //filieres
         $this->loadModel('Filieres');
         $all_filieres = $this->Filieres->find();
@@ -143,7 +170,8 @@ class NotesController extends AppController
                             'niveaux_labels',
                             'semestres_labels',
                             'modules_labels',
-                            'elements_labels'));
+                            'elements_labels',
+                            'etape'));
     }
 
     public function affichage()
