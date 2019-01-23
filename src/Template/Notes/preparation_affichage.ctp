@@ -1,11 +1,15 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <style>
+    body {
+        background-color: #FAFAFA;
+        margin: 0;
+    }
     .choice {
         width: 70%;
         height: auto;
         margin: 40px auto;
         padding: 20px;
-        background-color: #FAFAFA;
+        background-color: #E0F8F1;
         border: 1px solid #D8D8D8;
     }
 </style>
