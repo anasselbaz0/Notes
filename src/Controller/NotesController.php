@@ -275,7 +275,56 @@ class NotesController extends AppController
 
     public function affichage()
     {
-        debug($this->request->data);
+        if ($this->request->is('post')) {
+            $e = $this->request->data['e'];
+            $m = $this->request->data['m'];
+            $notes = $this->Notes->find();
+            $my_notes = array();
+            foreach ($notes as $a) {                
+                if ($a->element_id == $e) {
+                    $my_notes[] = $a;
+                }
+            }
+            $this->loadModel('Modules');
+            $this->loadModel('Elements');
+            $this->loadModel('Etudiers');
+            $this->loadModel('Etudiants');
+            $all_etudiants = $this->Etudiants->find();
+            $all_etudiers = $this->Etudiers->find();
+            $all_modules = $this->Modules->find();
+            $all_elements = $this->Elements->find();
+            foreach ($all_modules as $a) {
+                if($a->id == $m){
+                    $module = $a;
+                    break;
+                }
+            }
+            foreach ($all_elements as $a) {
+                if($a->id == $e){
+                    $element = $a;
+                    break;
+                }
+            }
+            foreach ($all_etudiers as $a) {
+                if($a->element_id == $e){
+                    $my_etudiers[] = $a;
+                }
+            }
+            foreach ($my_etudiers as $a) {
+                $etudiants_ids[] = $a->etudiant_id;
+            }
+            foreach ($all_etudiants as $a) {
+                if(in_array($a->id, $etudiants_ids)){
+                    $my_etudiants[] = $a;
+                }
+            }
+            $this->set(compact('my_notes',
+                                'element', 
+                                'module',
+                                'my_etudiants'));
+        } else {
+            $this->redirect(['action' => 'preparationAffichage']);
+        }
     }
 
 }
