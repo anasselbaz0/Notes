@@ -25,7 +25,7 @@
 <hr>
 <h6>Choix des paramètres</h6>
 <hr>
-            
+
         <div id="div_filiere" class="choice" style="display: block">
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Filière</h5>
@@ -38,6 +38,7 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Niveau</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('niveau', $niveaux_labels); ?> </div>
+                <input type="hidden" name="f" value="<?= $f ?>">
                 <button type="submit" id="suivant_n" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
@@ -46,6 +47,8 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Semestre</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('semestre', $semestres_labels); ?> </div>
+                <input type="hidden" name="f" value="<?= $f ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
                 <button type="submit" id="suivant_s" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
@@ -53,6 +56,9 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Module</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('module', $modules_labels); ?> </div>
+                <input type="hidden" name="f" value="<?= $f ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <input type="hidden" name="s" value="<?= $s ?>">
                 <button type="submit" id="suivant_m" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
@@ -60,10 +66,38 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Elément de module</h5>  
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('element', $elements_labels); ?> </div>
+                <input type="hidden" name="f" value="<?= $f ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <input type="hidden" name="s" value="<?= $s ?>">
+                <input type="hidden" name="m" value="<?= $m ?>">
                 <button type="submit" id="suivant_e" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div>
         <div id="div_submit" style="text-align: center;display: none">
+            <table>
+                <thead>
+                    <td>Filière</td>
+                    <td>Niveau</td>
+                    <td>Semestre</td>
+                    <td>Module</td>
+                    <td>Element</td>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><?= $f_l ?></td>
+                        <td><?= $n_l ?></td>
+                        <td><?= $s_l ?></td>
+                        <td><?= $m_l ?></td>
+                        <td><?= $e_l ?></td>
+                    </tr>
+                </tbody>
+            </table>
+            <?= $this->Form->create(null, ['url'=>['action'=>'affichage']]) ?>
+                <input type="hidden" name="f" value="<?= $f ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <input type="hidden" name="s" value="<?= $s ?>">
+                <input type="hidden" name="m" value="<?= $m ?>">
+                <input type="hidden" name="e" value="<?= $e ?>">
             <?= $this->Form->submit('Afficher', ['class'=>'btn btn-success']); ?>
         </div>
     <?= $this->Form->end(); ?>
@@ -104,15 +138,17 @@
             break;
         case 5:
             document.getElementById('div_submit').style.display = 'block';
-            document.getElementById('div_element').style.display = 'block';
-            document.getElementById('div_niveau').style.display = 'block';
-            document.getElementById('div_semestre').style.display = 'block';
-            document.getElementById('div_module').style.display = 'block';
+            document.getElementById('div_filiere').style.display = 'none';
+            document.getElementById('div_element').style.display = 'none';
+            document.getElementById('div_niveau').style.display = 'none';
+            document.getElementById('div_semestre').style.display = 'none';
+            document.getElementById('div_module').style.display = 'none';
             document.getElementById('suivant_f').style.display = 'none';
             document.getElementById('suivant_n').style.display = 'none';
             document.getElementById('suivant_s').style.display = 'none';
             document.getElementById('suivant_m').style.display = 'none';
             document.getElementById('suivant_e').style.display = 'none';
+
             break;
         default:
             break;

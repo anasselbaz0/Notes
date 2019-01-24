@@ -114,100 +114,163 @@ class NotesController extends AppController
 
     public function preparationAffichage()
     {
-        $etape = 0;
-        $f = 0; $filiere = null;
-        $n = 0; $niveau = null;
-        $s = 0; $semestre = null;
-        $m = 0; $module = null;
-        $e = 0; $element = null;
-        $filieres_labels = array();
-        $niveaux_labels = array();
-        $semestres_labels = array();
-        //affiche filieres par defaut
         $this->loadModel('Filieres');
         $all_filieres = $this->Filieres->find();
         foreach ($all_filieres as $f) { $filieres_labels[] = $f->libile; }
-        $this->set(compact('filieres_labels',
-                            'etape'));
-        //end affichage
+        $etape = 0;
+        $this->set(compact('filieres_labels', 'etape'));
         if($this->request->is('post')){
             if(isset($this->request->data['filiere'])){
                 $f = $this->request->data['filiere'];
                 $all_filieres_not_array = $this->Filieres->find();
                 $all_filieres = array();
-                foreach ($all_filieres_not_array as $a) {
-                    $all_filieres[] = $a;
-                }
+                foreach ($all_filieres_not_array as $a) { $all_filieres[] = $a; }
                 $filiere = $all_filieres[$f];
-                //niveaux
+                $f = $filiere->id;
                 $this->loadModel('Niveaus');
                 $all_niveaux = $this->Niveaus->find();
                 foreach ($all_niveaux as $n) { $niveaux_labels[] = $n->libile; }
                 $etape = 1;
-                $this->set(compact('filieres_labels',
-                            'niveaux_labels',
-                            'etape'));
+                $this->set(compact('filieres_labels', 
+                                    'niveaux_labels', 
+                                    'f', 
+                                    'etape'));
             }
             if(isset($this->request->data['niveau'])){
                 $n = $this->request->data['niveau'];
+                $f = $this->request->data['f'];
                 $this->loadModel('Niveaus');
                 $all_niveaux_not_array = $this->Niveaus->find();
                 $all_niveaux = array();
-                foreach ($all_niveaux_not_array as $a) {
-                    $all_niveaux[] = $a;
-                    $niveaux_labels[] = $a->libile;
-                }
+                foreach ($all_niveaux_not_array as $a) { $all_niveaux[] = $a;  $niveaux_labels[] = $a->libile; }
                 $niveau = $all_niveaux[$n];
-                //semestres
+                $n = $niveau->id;
+                $this->loadModel('Semestres');
+                $all_semestres = $this->Semestres->find();
+                foreach ($all_semestres as $s) { if($s->niveaus_id == $n) $semestres_labels[] = $s->libile; }
+                $etape = 2;
+                $this->set(compact('filieres_labels', 
+                                    'niveaux_labels', 
+                                    'semestres_labels', 
+                                    'f', 'n', 
+                                    'etape'));
+            }
+            if(isset($this->request->data['semestre'])){
+                $f = $this->request->data['f'];
+                $n = $this->request->data['n'];
                 $this->loadModel('Semestres');
                 $all_semestres = $this->Semestres->find();
                 foreach ($all_semestres as $s) {
-                    if($s->niveaus_id == $niveau->id) {$semestres_labels[] = $s->libile; }
+                    if($s->niveaus_id == $n) {
+                        $semestres[] = $s;
+                        $semestres_labels[] = $s->libile; 
+                    }
                 }
-                $etape = 2;
+                $semestre = $semestres[$this->request->data['semestre']];
+                $s = $semestre->id;
+                $this->loadModel('Niveaus');
+                $all_niveaux = $this->Niveaus->find();
+                foreach ($all_niveaux as $a) { $niveaux_labels[] = $a->libile; }
+                $this->loadModel('Groupes');
+                $all_groupes = $this->Groupes->find();
+                foreach ($all_groupes as $a) {
+                    if($a->niveaus_id==$n && $a->filiere_id==$f){
+                        $groupes_ids[] = $a->id;
+                    }
+                }
+                $this->loadModel('Modules');
+                $all_modules = $this->Modules->find();
+                foreach ($all_modules as $a) {
+                    if(in_array($a->groupe_id, $groupes_ids) && $a->semestre_id==$s){
+                        $modules_labels[] = $a->libile;
+                    }
+                }
+                $etape = 3;
                 $this->set(compact('filieres_labels',
                             'niveaux_labels',
                             'semestres_labels',
+                            'modules_labels',
+                            'f','n','s',
                             'etape'));
             }
-            if(isset($this->request->data['semestre'])){
-                $s = $this->request->data['semestre'];
-                $etape = 3;
-            }
             if(isset($this->request->data['module'])){
-                $n = $this->request->data['module'];
+                $n = $this->request->data['n'];
+                $s = $this->request->data['s'];
+                $f = $this->request->data['f'];
                 $etape = 4;
+                $this->loadModel('Groupes');
+                $all_groupes = $this->Groupes->find();
+                foreach ($all_groupes as $a) {
+                    if($a->niveaus_id==$n && $a->filiere_id==$f){
+                        $groupes_ids[] = $a->id;
+                    }
+                }
+                $this->loadModel('Modules');
+                $all_modules = $this->Modules->find();
+                foreach ($all_modules as $a) {
+                    if(in_array($a->groupe_id, $groupes_ids) && $a->semestre_id==$s){
+                        $modules[] = $a;
+                        $modules_labels[] = $a->libile;
+                    }
+                }
+                $module = $modules[$this->request->data['module']];
+                $m = $module->id;
+                $this->loadModel('Elements');
+                $all_elements = $this->Elements->find();
+                foreach ($all_elements as $a) { if($a->module_id==$m) $elements_labels[] = $a->libile; }
+                $this->loadModel('Niveaus');
+                $all_niveaux = $this->Niveaus->find();
+                foreach ($all_niveaux as $a) { $niveaux_labels[] = $a->libile; }
+                $this->loadModel('Semestres');
+                $all_semestres = $this->Semestres->find();
+                foreach ($all_semestres as $s) { if($s->niveaus_id == $n) $semestres_labels[] = $s->libile; }
+                $s = $this->request->data['s'];
+                $this->set(compact('filieres_labels',
+                            'niveaux_labels',
+                            'semestres_labels',
+                            'modules_labels',
+                            'elements_labels',
+                            'f','n','s','m',
+                            'etape'));
             }
             if(isset($this->request->data['element'])){
-                $n = $this->request->data['element'];
                 $etape = 5;
+                $n = $this->request->data['n'];
+                $s = $this->request->data['s'];
+                $f = $this->request->data['f'];
+                $m = $this->request->data['m'];
+                $this->loadModel('Elements');
+                $this->loadModel('Modules');
+                $this->loadModel('Semestres');
+                $this->loadModel('Niveaus');
+                $this->loadModel('Filieres');
+                $modules = $this->Modules->find();
+                $semestres = $this->Semestres->find();
+                $niveaux = $this->Niveaus->find();
+                $filieres = $this->Filieres->find();
+                $all_elements = $this->Elements->find();
+                foreach ($modules as $a) { if($a->id == $m) $m_l = $a->libile; }
+                foreach ($semestres as $a) { if($a->id == $s) $s_l = $a->libile; }
+                foreach ($niveaux as $a) { if($a->id == $n) $n_l = $a->libile; }
+                foreach ($filieres as $a) { if($a->id == $f) $f_l = $a->libile; }
+                foreach ($all_elements as $a) {
+                    if($a->module_id==$m){ 
+                        $elements_labels[] = $a->libile;
+                        $es[] = $a; 
+                    }
+                }
+                $element = $es[$this->request->data['element']];
+                $e = $element->id;
+                $e_l = $element->libile;
+                $this->set(compact('f_l',
+                                    'n_l',
+                                    's_l',
+                                    'm_l',
+                                    'e_l',
+                                    'f','n','s','m','e',
+                                    'etape'));
             }
         }
-        
-
-        
-        
-        //semestres
-        $this->loadModel('Semestres');
-        $all_semestres = $this->Semestres->find();
-        $semestres_labels = array();
-        foreach ($all_semestres as $s) { $semestres_labels[] = $s->libile; }
-        //modules
-        $this->loadModel('Modules');
-        $all_modules = $this->Modules->find();
-        $modules_labels = array();
-        foreach ($all_modules as $m) { $modules_labels[] = $m->libile; }
-        $this->loadModel('Elements');
-        $all_elements = $this->Elements->find();
-        $elements_labels = array();
-        foreach ($all_elements as $e) { $elements_labels[] = $e->libile; }
-        //passer les arguments
-        // $this->set(compact('filieres_labels',
-        //                     'niveaux_labels',
-        //                     'semestres_labels',
-        //                     'modules_labels',
-        //                     'elements_labels',
-        //                     'etape'));
     }
 
     public function affichage()
