@@ -30,7 +30,7 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Filière</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('filiere', $filieres_labels); ?> </div>
-                <button type="submit" style="width: 20%; float: right ;" class="btn btn-dark">Valider</button>
+                <button type="submit" id="suivant_f" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div>  
         
@@ -38,7 +38,7 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Niveau</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('niveau', $niveaux_labels); ?> </div>
-                <button type="submit" style="width: 20%; float: right ;" class="btn btn-dark">Valider</button>
+                <button type="submit" id="suivant_n" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
         
@@ -46,21 +46,21 @@
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Semestre</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('semestre', $semestres_labels); ?> </div>
-                <button type="submit" style="width: 20%; float: right ;" class="btn btn-dark">Valider</button>
+                <button type="submit" id="suivant_s" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
         <div id="div_module" class="choice" style="display: none">
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Module</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('module', $modules_labels); ?> </div>
-                <button style="width: 20%; float: right ;" class="btn btn-dark">Valider</button>
+                <button type="submit" id="suivant_m" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div> 
         <div id="div_element" class="choice" style="display: none">
             <?= $this->Form->create(null, ['url'=>['action'=>'preparationAffichage']]); ?>
             <h5>Elément de module</h5>  
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('element', $elements_labels); ?> </div>
-                <button style="width: 20%; float: right ;" class="btn btn-dark">Valider</button>
+                <button type="submit" id="suivant_e" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
             <?= $this->Form->end(); ?>
         </div>
         <div id="div_submit" style="text-align: center;display: none">
@@ -75,21 +75,32 @@
     switch (etape) {
         case 1:
             document.getElementById('div_niveau').style.display = 'block';
+            document.getElementById('suivant_f').style.display = 'none';
             break;
         case 2:
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
+            document.getElementById('suivant_f').style.display = 'none';
+            document.getElementById('suivant_n').style.display = 'none';
             break;
         case 3:
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
             document.getElementById('div_module').style.display = 'block';
+            document.getElementById('suivant_f').style.display = 'none';
+            document.getElementById('suivant_n').style.display = 'none';
+            document.getElementById('suivant_s').style.display = 'none';
+            
             break;
         case 4:
             document.getElementById('div_element').style.display = 'block';
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
             document.getElementById('div_module').style.display = 'block';
+            document.getElementById('suivant_f').style.display = 'none';
+            document.getElementById('suivant_n').style.display = 'none';
+            document.getElementById('suivant_s').style.display = 'none';
+            document.getElementById('suivant_m').style.display = 'none';
             break;
         case 5:
             document.getElementById('div_submit').style.display = 'block';
@@ -97,6 +108,11 @@
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
             document.getElementById('div_module').style.display = 'block';
+            document.getElementById('suivant_f').style.display = 'none';
+            document.getElementById('suivant_n').style.display = 'none';
+            document.getElementById('suivant_s').style.display = 'none';
+            document.getElementById('suivant_m').style.display = 'none';
+            document.getElementById('suivant_e').style.display = 'none';
             break;
         default:
             break;
