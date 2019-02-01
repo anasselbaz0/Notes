@@ -16,16 +16,61 @@
         background-color: #E0F8F1;
         border: 1px solid #D8D8D8;
     }
+    #indicateurs{
+        width: 40%;
+        margin: 2%;
+        padding: 2%;
+        float: right;
+    }
+    #titres{
+        width: 52%;
+        margin: 0;
+        padding: 2%;
+        float: left;
+    }
+    .i {
+        text-align: center;
+    }
+    .info{
+        color: #7401DF;
+    }
 </style>
 
-<br>
-<h1>Gestion des notes</h1>
-<hr>
-<h4>Saisie des notes</h4>
-<hr>
-<h6>Module : <?= $module->libile ?></h6>
-<h6>Element : <?= $element->libile ?></h6>
-<hr>
+<div id="titres">
+    <br>
+    <h1>Gestion des notes</h1>
+    <hr>
+    <h2>Affichage des notes</h2>
+    <hr>
+    <h4>Module : <span class="info"><?= $module->libile ?></span></h4>
+    <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
+</div>
+
+<div id="indicateurs">
+    <h2>Indicateurs de suivie</h2><br>
+    <table>
+        <tr>
+            <td><b>Note Max</b></td>
+            <td class="i"> <?= $max ?> </td>
+        </tr>
+        <tr>
+            <td><b>Note Min</b></td>
+            <td class="i"> <?= $min ?> </td>
+        </tr>
+        <tr>
+            <td><b>Note Moy</b></td>
+            <td class="i"> <?= $moy ?> </td>
+        </tr>
+        <tr>
+            <td><b>Saisies effectués</b></td>
+            <td class="i"> <?= sizeof($my_notes) ?> </td>
+        </tr>
+        <tr>
+            <td><b>Ecart-type</b></td>
+            <td class="i"> <?= $ecart ?> </td>
+        </tr>
+    </table>
+</div>
 
 <div id="saisie">
     <table>
@@ -48,7 +93,18 @@
                             echo "<td>$et->nom_fr</td>";
                             echo "<td>$et->prenom_fr</td>";
                             echo "<td>$no->note</td>"; ?>
-                           <td> <?= $this->Html->link('Modifier', ['action'=>'edit', $no->id], ['class'=>'btn btn-warning']) ?> </td>
+                            <td>
+                                <?= $this->Html->link('MODIFIER', ['action'=>'edit', $no->id], ['class'=>'btn btn-warning']) ?>
+                                <?= $this->Html->link('UNSET', ['action'=>'delete', '?'=>[
+                                    'id'=>$no->id,
+                                    'f' => $f,
+                                    'n' => $n,
+                                    's' => $s,
+                                    'm' => $m,
+                                    'e' => $e
+                                    ]], ['class'=>'btn btn-danger']) 
+                                ?>
+                            </td>
                        <?php echo '</tr>';
                     }
                     else { //la note makaynach
@@ -67,11 +123,16 @@
                                     <input type="hidden" name="ratt_saved" value="0">
                                     <input type="hidden" name="created_at" value="<?= date('d-m-y h:m') ?>">
                                     <input type="hidden" name="updated_at" value="<?= date('d-m-y h:m') ?>">
-                                    <div style="width:80%; float:left;"><input type="number" name="note"></div>
-                                    <div style="width:19%; float:right;"><input type="submit" value="Noter" class="btn btn-success"></div>
-                                <?php echo $this->Form->end();
-                            echo "</td>";
-                            echo "<td></td>";
+                                    <input type="hidden" name="f" value="<?= $f ?>">
+                                    <input type="hidden" name="n" value="<?= $n ?>">
+                                    <input type="hidden" name="s" value="<?= $s ?>">
+                                    <input type="hidden" name="m" value="<?= $m ?>">
+                                    <input type="hidden" name="e" value="<?= $e ?>">
+                                    <input style="width: 50%;" type="number" step=0.01 name="note">
+                                    
+                            </td>
+                            <td><input type="submit" value="NOTER" class="btn btn-success" style="border-radius: 3px;"></td>
+                            <?php echo $this->Form->end();
                         echo '</tr>';
                     }
                 }

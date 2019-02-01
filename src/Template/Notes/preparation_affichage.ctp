@@ -13,8 +13,8 @@
         height: auto;
         margin: 40px auto;
         padding: 20px;
-        background-color: #E0F8F1;
-        border: 1px solid #D8D8D8;
+        background-color: #DFDFDF;
+        border: 2px solid #7401DF;
     }
 </style>
 

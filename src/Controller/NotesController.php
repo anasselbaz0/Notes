@@ -53,18 +53,32 @@ class NotesController extends AppController
     {
         $note = $this->Notes->newEntity();
         if ($this->request->is('post')) {
+            $e = $this->request->data['e'];
+            $m = $this->request->data['m'];
+            $s = $this->request->data['s'];
+            $n = $this->request->data['n'];
+            $f = $this->request->data['f'];
             $note = $this->Notes->patchEntity($note, $this->request->getData());
-            if ($this->Notes->save($note)) {
-                $this->Flash->success(__('The note has been saved.'));
-
+            $the_note = $note->note;
+            if($the_note>20 or $the_note<0){
+                $this->Flash->error(__('Il faut respecter le barème!'));
                 return $this->redirect($this->referer());
+            } else {
+                if ($this->Notes->save($note)) {
+                    return $this->redirect([
+                        'controller' => 'Notes',
+                        'action' => 'saisie',
+                        '?' => [
+                            'f' => $f,
+                            'n' => $n,
+                            's' => $s,
+                            'm' => $m,
+                            'e' => $e
+                        ]
+                    ]);
+                }
             }
-            $this->Flash->error(__('The note could not be saved. Please, try again.'));
-            $this->redirect($this->referer());
         }
-        $elements = $this->Notes->Elements->find('list', ['limit' => 200]);
-        $etudiers = $this->Notes->Etudiers->find('list', ['limit' => 200]);
-        $this->set(compact('note', 'elements', 'etudiers'));
     }
 
     /**
@@ -102,15 +116,31 @@ class NotesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $note = $this->Notes->get($id);
-        if ($this->Notes->delete($note)) {
-            $this->Flash->success(__('The note has been deleted.'));
-        } else {
-            $this->Flash->error(__('The note could not be deleted. Please, try again.'));
+        if($this->request->is('get')){
+            $e = $this->request->query['e'];
+            $m = $this->request->query['m'];
+            $s = $this->request->query['s'];
+            $n = $this->request->query['n'];
+            $f = $this->request->query['f'];
+            $id = $this->request->query['id'];
+            $note = $this->Notes->get($id);
+            if ($this->Notes->delete($note)) {
+                //$this->Flash->success(__('The note has been deleted.'));
+                return $this->redirect([
+                    'controller' => 'Notes',
+                    'action' => 'saisie',
+                    '?' => [
+                        'f' => $f,
+                        'n' => $n,
+                        's' => $s,
+                        'm' => $m,
+                        'e' => $e
+                    ]
+                ]);
+            } else {
+                $this->Flash->error(__('The note could not be deleted. Please, try again.'));
+            }
         }
-
-        return $this->redirect(['action' => 'index']);
     }
 
 
@@ -352,10 +382,33 @@ class NotesController extends AppController
                     $my_etudiants[] = $a;
                 }
             }
+            $max=$my_notes[0]->note;
+            $min=$my_notes[0]->note;
+            $somme=0;
+            $moy=$my_notes[0]->note;
+            $ecart=0;
+            foreach ($my_notes as $aaa) {
+                if($aaa->note > $max) $max = $aaa->note;
+                if($aaa->note < $min) $min = $aaa->note;
+                $somme += $aaa->note; 
+            }
+            $moy = $somme/(sizeof($my_notes));
+            //calcul de lecart type
+            $somme_1 = 0;
+            $notes=array();
+            foreach ($my_notes as $bbb) {
+                $notes[] = $bbb->note;
+            }
+            foreach ($notes as $aaa) {
+                $somme_1 += ($aaa - $moy)*($aaa - $moy); 
+            }
+            $somme_1 = $somme_1/sizeof($my_notes);
+            $ecart = sqrt($somme_1);
             $this->set(compact('my_notes',
                                 'element', 
                                 'module',
-                                'my_etudiants'));
+                                'my_etudiants',
+                                'max', 'min', 'moy', 'ecart'));
         } else {
             $this->redirect(['action' => 'preparationAffichage']);
         }
@@ -569,6 +622,9 @@ class NotesController extends AppController
         if ($this->request->is('post')) {
             $e = $this->request->data['e'];
             $m = $this->request->data['m'];
+            $s = $this->request->data['s'];
+            $n = $this->request->data['n'];
+            $f = $this->request->data['f'];
             $notes = $this->Notes->find();
             $my_notes = array();
             foreach ($notes as $a) {                
@@ -609,12 +665,124 @@ class NotesController extends AppController
                     $my_etudiants[] = $a;
                 }
             }
+            $max=$my_notes[0]->note;
+            $min=$my_notes[0]->note;
+            $somme=0;
+            $moy=$my_notes[0]->note;
+            $ecart=0;
+            foreach ($my_notes as $aaa) {
+                if($aaa->note > $max) $max = $aaa->note;
+                if($aaa->note < $min) $min = $aaa->note;
+                $somme += $aaa->note; 
+            }
+            $moy = $somme/(sizeof($my_notes));
+            //calcul de lecart type
+            $somme_1 = 0;
+            $notes=array();
+            foreach ($my_notes as $bbb) {
+                $notes[] = $bbb->note;
+            }
+            foreach ($notes as $aaa) {
+                $somme_1 += ($aaa - $moy)*($aaa - $moy); 
+            }
+            $somme_1 = $somme_1/sizeof($my_notes);
+            $ecart = sqrt($somme_1);
             $this->set(compact('my_notes',
                                 'element', 
                                 'module',
                                 'my_etudiants',
-                                'my_etudiers'));
+                                'my_etudiers',
+                                'f','n','s','m','e',
+                                'max', 'min', 'moy', 'ecart'));
         } 
+        else if($this->request->is('get')){
+            $e = $this->request->query['e'];
+            $m = $this->request->query['m'];
+            $s = $this->request->query['s'];
+            $n = $this->request->query['n'];
+            $f = $this->request->query['f'];
+            $notes = $this->Notes->find();
+            $my_notes = array();
+            foreach ($notes as $a) {                
+                if ($a->element_id == $e) {
+                    $my_notes[] = $a;
+                }
+            }
+            $this->loadModel('Modules');
+            $this->loadModel('Elements');
+            $this->loadModel('Etudiers');
+            $this->loadModel('Etudiants');
+            $all_etudiants = $this->Etudiants->find();
+            $all_etudiers = $this->Etudiers->find();
+            $all_modules = $this->Modules->find();
+            $all_elements = $this->Elements->find();
+            foreach ($all_modules as $a) {
+                if($a->id == $m){
+                    $module = $a;
+                    break;
+                }
+            }
+            foreach ($all_elements as $a) {
+                if($a->id == $e){
+                    $element = $a;
+                    break;
+                }
+            }
+            foreach ($all_etudiers as $a) {
+                if($a->element_id == $e){
+                    $my_etudiers[] = $a;
+                }
+            }
+            foreach ($my_etudiers as $a) {
+                $etudiants_ids[] = $a->etudiant_id;
+            }
+            foreach ($all_etudiants as $a) {
+                if(in_array($a->id, $etudiants_ids)){
+                    $my_etudiants[] = $a;
+                }
+            }
+            $max=$my_notes[0]->note;
+            $min=$my_notes[0]->note;
+            $somme=0;
+            $moy=$my_notes[0]->note;
+            $ecart=0;
+            foreach ($my_notes as $aaa) {
+                if($aaa->note > $max) $max = $aaa->note;
+                if($aaa->note < $min) $min = $aaa->note;
+                $somme += $aaa->note; 
+            }
+            $moy = $somme/(sizeof($my_notes));
+            $max=$my_notes[0]->note;
+            $min=$my_notes[0]->note;
+            $somme=0;
+            $moy=$my_notes[0]->note;
+            $ecart=0;
+            foreach ($my_notes as $aaa) {
+                if($aaa->note > $max) $max = $aaa->note;
+                if($aaa->note < $min) $min = $aaa->note;
+                $somme += $aaa->note; 
+            }
+            
+            $moy = $somme/(sizeof($my_notes));
+            //calcul de lecart type
+            $somme_1 = 0;
+            $notes=array();
+            foreach ($my_notes as $bbb) {
+                $notes[] = $bbb->note;
+            }
+            foreach ($notes as $aaa) {
+                $somme_1 += ($aaa - $moy)*($aaa - $moy); 
+            }
+            $somme_1 = $somme_1/sizeof($my_notes);
+            $ecart = sqrt($somme_1);
+            $this->set(compact('my_notes',
+                                'element', 
+                                'module',
+                                'my_etudiants',
+                                'my_etudiers',
+                                'f','n','s','m','e',
+                                'max', 'min', 'moy', 'ecart'));
+        }
         else {
             $this->redirect(['action' => 'preparationSaisie']);
         }
