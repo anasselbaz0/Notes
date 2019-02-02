@@ -3,6 +3,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+<?= $this->Html->script('html2canvas'); ?>
+<?= $this->Html->script('jspdf.min'); ?>
+<script>
+    function print() {
+		const filename  = 'Notes.pdf';
+		html2canvas(document.querySelector('#HTMLtoPDF')).then(canvas => {
+			let pdf = new jsPDF('p', 'mm', 'a4');
+			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
+			pdf.save(filename);
+		});
+	}
+</script>
+
 <style>
     body {
         background-color: #FAFAFA;
@@ -36,73 +49,68 @@
     }
 </style>
 
-<div id="titres">
-    <br>
-    <h1>Gestion des notes</h1>
-    <hr>
-    <h2>Affichage des notes</h2>
-    <hr>
-    <h4>Module : <span class="info"><?= $module->libile ?></span></h4>
-    <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
-</div>
+<div id="HTMLtoPDF">
+    <div id="titres">
+        <br>
+        <h1>Gestion des notes</h1>
+        <hr>
+        <h2>Affichage des notes</h2>
+        <hr>
+        <h4>Module : <span class="info"><?= $module->libile ?></span></h4>
+        <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
+        <hr>
+        <button class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
+    </div>
 
-<div id="indicateurs">
-    <h2>Indicateurs de suivie</h2><br>
-    <table>
-        <tr>
-            <td><b>Note Max</b></td>
-            <td class="i"> <?= $max ?> </td>
-        </tr>
-        <tr>
-            <td><b>Note Min</b></td>
-            <td class="i"> <?= $min ?> </td>
-        </tr>
-        <tr>
-            <td><b>Note Moy</b></td>
-            <td class="i"> <?= $moy ?> </td>
-        </tr>
-        <tr>
-            <td><b>Saisies effectués</b></td>
-            <td class="i"> <?= sizeof($my_notes) ?> </td>
-        </tr>
-        <tr>
-            <td><b>Ecart-type</b></td>
-            <td class="i"> <?= $ecart ?> </td>
-        </tr>
-    </table>
-</div>
+    <div id="indicateurs">
+        <h2>Indicateurs de suivie</h2><br>
+        <table>
+            <tr>
+                <td><b>Note Max</b></td>
+                <td class="i"> <?= $max ?> </td>
+            </tr>
+            <tr>
+                <td><b>Note Min</b></td>
+                <td class="i"> <?= $min ?> </td>
+            </tr>
+            <tr>
+                <td><b>Note Moy</b></td>
+                <td class="i"> <?= $moy ?> </td>
+            </tr>
+            <tr>
+                <td><b>Saisies effectués</b></td>
+                <td class="i"> <?= sizeof($my_notes) ?> </td>
+            </tr>
+            <tr>
+                <td><b>Ecart-type</b></td>
+                <td class="i"> <?= $ecart ?> </td>
+            </tr>
+        </table>
+    </div>
 
-
-
-
-
-
-
-
-<div id="affichage">
-    <table>
-        <thead>
-            <td>CNE</td>
-            <td>Nom</td>
-            <td>Prénom</td>
-            <td>Note</td>
-        </thead>
-        <tbody>
-            <?php
-                for ($i=0; $i < sizeof($my_notes); $i++) {
+    <div id="affichage">
+        <table>
+            <thead>
+                <td>CNE</td>
+                <td>Nom</td>
+                <td>Prénom</td>
+                <td>Note</td>
+            </thead>
+            <tbody>
+                <?php
+                for ($i = 0; $i < sizeof($my_notes); $i++) {
                     $et = $my_etudiants[$i];
                     $no = $my_notes[$i];
                     echo '<tr>';
-                        echo "<td>$et->cne</td>";
-                        echo "<td>$et->nom_fr</td>";
-                        echo "<td>$et->prenom_fr</td>";
-                        echo "<td>$no->note</td>";
+                    echo "<td>$et->cne</td>";
+                    echo "<td>$et->nom_fr</td>";
+                    echo "<td>$et->prenom_fr</td>";
+                    echo "<td>$no->note</td>";
                     echo '</tr>';
                 }
-            ?>
-        </tbody>
-    </table>
+                ?>
+            </tbody>
+        </table>
+    </div>
+
 </div>
-
-
-
