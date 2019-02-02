@@ -211,6 +211,10 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $etape = 2;
+                if (!isset($semestres_labels)) {
+                    $this->Flash->error(__('Aucune semestre est enregistré pour cette filière dans ce niveau!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -253,6 +257,10 @@ class NotesController extends AppController
                     }
                 }
                 $etape = 3;
+                if (!isset($modules_labels)) {
+                    $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -302,6 +310,10 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $s = $this->request->data['s'];
+                if (!isset($elements_labels)) {
+                    $this->Flash->error(__('Aucun element est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -542,6 +554,10 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $etape = 2;
+                if (!isset($semestres_labels)) {
+                    $this->Flash->error(__('Aucune semestre est enregistré pour cette filière dans ce niveau!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -584,6 +600,10 @@ class NotesController extends AppController
                     }
                 }
                 $etape = 3;
+                if (!isset($modules_labels)) {
+                    $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -633,6 +653,10 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $s = $this->request->data['s'];
+                if (!isset($elements_labels)) {
+                    $this->Flash->error(__('Aucun element est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
