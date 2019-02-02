@@ -3,19 +3,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-<?= $this->Html->script('html2canvas'); ?>
-<?= $this->Html->script('jspdf.min'); ?>
-<script>
-    function print() {
-		const filename  = 'Notes.pdf';
-		html2canvas(document.querySelector('#HTMLtoPDF')).then(canvas => {
-			let pdf = new jsPDF('p', 'mm', 'a4');
-			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
-			pdf.save(filename);
-		});
-	}
-</script>
-
 <style>
     body {
         background-color: #FAFAFA;
@@ -49,6 +36,22 @@
     }
 </style>
 
+<!-- <?= $this->Html->script('jspdf.min'); ?> -->
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+<script>
+    function print() {
+        var doc = new jsPDF();
+        var specialElementHandlers = {
+            '#hidediv' : function(element,render) {return true;}
+        };
+        doc.fromHTML($('#testdiv').get(0), 20,20,{
+                    'width':500,
+                    'elementHandlers': specialElementHandlers
+        });
+        doc.save('Notes.pdf');
+    }
+</script>
+
 <div id="HTMLtoPDF">
     <div id="titres">
         <br>
@@ -59,7 +62,9 @@
         <h4>Module : <span class="info"><?= $module->libile ?></span></h4>
         <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
         <hr>
-        <button class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
+        
+            <button id="hidediv" class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
+        
     </div>
 
     <div id="indicateurs">
