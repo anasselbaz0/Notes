@@ -36,19 +36,14 @@
     }
 </style>
 
-<!-- <?= $this->Html->script('jspdf.min'); ?> -->
-<script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+<?= $this->Html->script('jspdf.min'); ?>
 <script>
     function print() {
         var doc = new jsPDF();
-        var specialElementHandlers = {
-            '#hidediv' : function(element,render) {return true;}
-        };
-        doc.fromHTML($('#testdiv').get(0), 20,20,{
-                    'width':500,
-                    'elementHandlers': specialElementHandlers
+        doc.fromHTML($('#HTMLtoPDF').get(0), 20,20,{
+                    'width':500
         });
-        doc.save('Notes.pdf');
+        doc.save('page.pdf');
     }
 </script>
 
@@ -63,7 +58,7 @@
         <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
         <hr>
         
-            <button id="hidediv" class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
+            <button class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
         
     </div>
 
@@ -96,10 +91,12 @@
     <div id="affichage">
         <table>
             <thead>
-                <td>CNE</td>
-                <td>Nom</td>
-                <td>Prénom</td>
-                <td>Note</td>
+                <tr>
+                    <th scope="col"><?= $this->Paginator->sort('CNE') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Nom') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('prénom') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Note') ?></th>
+                </tr>
             </thead>
             <tbody>
                 <?php
