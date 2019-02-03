@@ -27,7 +27,7 @@
 <hr>
 
         <div id="div_filiere" class="choice" style="display: block">
-            <?= $this->Form->create(null, ['url'=>['action'=>'preparationSaisie']]); ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'preparationSaisie']]); ?>
             <h5>Filière</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('filiere', $filieres_labels); ?> </div>
                 <button type="submit" id="suivant_f" style="width: 20%; float: right ;" class="btn btn-dark">Suivant</button>
@@ -35,7 +35,7 @@
         </div>  
         
         <div id="div_niveau" class="choice" style="display: none">
-            <?= $this->Form->create(null, ['url'=>['action'=>'preparationSaisie']]); ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'preparationSaisie']]); ?>
             <h5>Niveau</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('niveau', $niveaux_labels); ?> </div>
                 <input type="hidden" name="f" value="<?= $f ?>">
@@ -44,7 +44,7 @@
         </div> 
         
         <div id="div_semestre" class="choice" style="display: none">
-            <?= $this->Form->create(null, ['url'=>['action'=>'preparationSaisie']]); ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'preparationSaisie']]); ?>
             <h5>Semestre</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('semestre', $semestres_labels); ?> </div>
                 <input type="hidden" name="f" value="<?= $f ?>">
@@ -53,7 +53,7 @@
             <?= $this->Form->end(); ?>
         </div> 
         <div id="div_module" class="choice" style="display: none">
-            <?= $this->Form->create(null, ['url'=>['action'=>'preparationSaisie']]); ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'preparationSaisie']]); ?>
             <h5>Module</h5>
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('module', $modules_labels); ?> </div>
                 <input type="hidden" name="f" value="<?= $f ?>">
@@ -63,7 +63,7 @@
             <?= $this->Form->end(); ?>
         </div> 
         <div id="div_element" class="choice" style="display: none">
-            <?= $this->Form->create(null, ['url'=>['action'=>'preparationSaisie']]); ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'preparationSaisie']]); ?>
             <h5>Elément de module</h5>  
                 <div style="width: 79%; float: left ;"> <?= $this->Form->select('element', $elements_labels); ?> </div>
                 <input type="hidden" name="f" value="<?= $f ?>">
@@ -92,13 +92,13 @@
                     </tr>
                 </tbody>
             </table>
-            <?= $this->Form->create(null, ['url'=>['action'=>'saisie']]) ?>
+            <?= $this->Form->create(null, ['url' => ['action' => 'saisie']]) ?>
                 <input type="hidden" name="f" value="<?= $f ?>">
                 <input type="hidden" name="n" value="<?= $n ?>">
                 <input type="hidden" name="s" value="<?= $s ?>">
                 <input type="hidden" name="m" value="<?= $m ?>">
                 <input type="hidden" name="e" value="<?= $e ?>">
-            <?= $this->Form->submit('Saisir', ['class'=>'btn btn-success']); ?>
+            <?= $this->Form->submit('Saisir', ['class' => 'btn btn-success']); ?>
         </div>
     <?= $this->Form->end(); ?>
  
@@ -109,21 +109,21 @@
     switch (etape) {
         case 1:
             document.getElementById('div_niveau').style.display = 'block';
-            document.getElementById('suivant_f').style.display = 'none';
+            document.getElementById('suivant_f').innerHTML = 'Modifier';
             break;
         case 2:
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
-            document.getElementById('suivant_f').style.display = 'none';
-            document.getElementById('suivant_n').style.display = 'none';
+            document.getElementById('suivant_f').innerHTML = 'Modifier';
+            document.getElementById('suivant_n').innerHTML = 'Modifier';
             break;
         case 3:
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
             document.getElementById('div_module').style.display = 'block';
-            document.getElementById('suivant_f').style.display = 'none';
-            document.getElementById('suivant_n').style.display = 'none';
-            document.getElementById('suivant_s').style.display = 'none';
+            document.getElementById('suivant_f').innerHTML = 'Modifier';
+            document.getElementById('suivant_n').innerHTML = 'Modifier';
+            document.getElementById('suivant_s').innerHTML = 'Modifier';
             
             break;
         case 4:
@@ -131,23 +131,14 @@
             document.getElementById('div_niveau').style.display = 'block';
             document.getElementById('div_semestre').style.display = 'block';
             document.getElementById('div_module').style.display = 'block';
-            document.getElementById('suivant_f').style.display = 'none';
-            document.getElementById('suivant_n').style.display = 'none';
-            document.getElementById('suivant_s').style.display = 'none';
-            document.getElementById('suivant_m').style.display = 'none';
+            document.getElementById('suivant_f').innerHTML = 'Modifier';
+            document.getElementById('suivant_n').innerHTML = 'Modifier';
+            document.getElementById('suivant_s').innerHTML = 'Modifier';
+            document.getElementById('suivant_m').innerHTML = 'Modifier';
             break;
         case 5:
             document.getElementById('div_submit').style.display = 'block';
             document.getElementById('div_filiere').style.display = 'none';
-            document.getElementById('div_element').style.display = 'none';
-            document.getElementById('div_niveau').style.display = 'none';
-            document.getElementById('div_semestre').style.display = 'none';
-            document.getElementById('div_module').style.display = 'none';
-            document.getElementById('suivant_f').style.display = 'none';
-            document.getElementById('suivant_n').style.display = 'none';
-            document.getElementById('suivant_s').style.display = 'none';
-            document.getElementById('suivant_m').style.display = 'none';
-            document.getElementById('suivant_e').style.display = 'none';
 
             break;
         default:

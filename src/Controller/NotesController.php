@@ -163,6 +163,11 @@ class NotesController extends AppController
 
     public function preparationAffichage()
     {
+        $filieres_labels = array();
+        $niveaux_labels = array();
+        $semestres_labels = array();
+        $modules_labels = array();
+        $elements_labels = array();
         $this->loadModel('Filieres');
         $all_filieres = $this->Filieres->find();
         foreach ($all_filieres as $f) {
@@ -211,7 +216,7 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $etape = 2;
-                if (!isset($semestres_labels)) {
+                if (sizeof($semestres_labels) == 0) {
                     $this->Flash->error(__('Aucune semestre est enregistré pour cette filière dans ce niveau!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -257,7 +262,7 @@ class NotesController extends AppController
                     }
                 }
                 $etape = 3;
-                if (!isset($modules_labels)) {
+                if (sizeof($modules_labels) == 0) {
                     $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -310,7 +315,7 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $s = $this->request->data['s'];
-                if (!isset($elements_labels)) {
+                if (sizeof($elements_labels) == 0) {
                     $this->Flash->error(__('Aucun element est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -398,6 +403,11 @@ class NotesController extends AppController
 
     public function affichage()
     {
+        $filieres_labels = array();
+        $niveaux_labels = array();
+        $semestres_labels = array();
+        $modules_labels = array();
+        $elements_labels = array();
         if ($this->request->is('post')) {
             $e = $this->request->data['e'];
             $m = $this->request->data['m'];
@@ -506,6 +516,11 @@ class NotesController extends AppController
 
     public function preparationSaisie()
     {
+        $filieres_labels = array();
+        $niveaux_labels = array();
+        $semestres_labels = array();
+        $modules_labels = array();
+        $elements_labels = array();
         $this->loadModel('Filieres');
         $all_filieres = $this->Filieres->find();
         foreach ($all_filieres as $f) {
@@ -554,7 +569,7 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $etape = 2;
-                if (!isset($semestres_labels)) {
+                if (sizeof($semestres_labels) == 0) {
                     $this->Flash->error(__('Aucune semestre est enregistré pour cette filière dans ce niveau!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -600,7 +615,7 @@ class NotesController extends AppController
                     }
                 }
                 $etape = 3;
-                if (!isset($modules_labels)) {
+                if (sizeof($modules_labels) == 0) {
                     $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -653,7 +668,7 @@ class NotesController extends AppController
                     if ($s->niveaus_id == $n) $semestres_labels[] = $s->libile;
                 }
                 $s = $this->request->data['s'];
-                if (!isset($elements_labels)) {
+                if (sizeof($elements_labels) == 0) {
                     $this->Flash->error(__('Aucun element est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -746,6 +761,11 @@ class NotesController extends AppController
 
     public function saisie()
     {
+        $filieres_labels = array();
+        $niveaux_labels = array();
+        $semestres_labels = array();
+        $modules_labels = array();
+        $elements_labels = array();
         if ($this->request->is('post')) {
             $e = $this->request->data['e'];
             $m = $this->request->data['m'];

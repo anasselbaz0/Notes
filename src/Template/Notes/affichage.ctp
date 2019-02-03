@@ -36,16 +36,34 @@
     }
 </style>
 
-<?= $this->Html->script('jspdf.min'); ?>
+<?= $this->Html->script('jspdf') ?>
+<?= $this->Html->script('jspdf.min') ?>
+<?= $this->Html->script('jspdf.debug') ?>
+<?= $this->Html->script('html2pdf') ?>
+<?= $this->Html->script('jspdf-aututable') ?>
+
 <script>
     function print() {
         var doc = new jsPDF();
-        doc.fromHTML($('#HTMLtoPDF').get(0), 20,20,{
-                    'width':500
+        var source = $('#HTMLtoPDF').html();
+        console.log(source);
+        var specialElementHandlers = {
+            '#bypassme': function(element, renderer) {
+                return true;
+            }
+        };
+        doc.fromHTML(
+        source, // HTML string or DOM elem ref.
+        30, // x coord
+        30, // y coord
+        {
+            'width': 500, // max width of content on PDF
+            'elementHandlers': specialElementHandlers
         });
-        doc.save('page.pdf');
+        doc.save('todos.pdf');
     }
 </script>
+
 
 <div id="HTMLtoPDF">
     <div id="titres">
@@ -58,13 +76,13 @@
         <h4>Element :<span class="info"> <?= $element->libile ?></span></h4>
         <hr>
         
-            <button class="btn btn-warning" onclick="print()" style="width:100px;">PDF</button>
+            <button onclick="print()" id="hidediv" class="btn btn-warning" style="width:100px;">PDF</button>
         
     </div>
 
     <div id="indicateurs">
         <h2>Indicateurs de suivie</h2><br>
-        <table>
+        <table id="t1">
             <tr>
                 <td><b>Note Max</b></td>
                 <td class="i"> <?= $max ?> </td>
@@ -89,7 +107,7 @@
     </div>
 
     <div id="affichage">
-        <table>
+        <table id="t2">
             <thead>
                 <tr>
                     <th scope="col"><?= $this->Paginator->sort('CNE') ?></th>
@@ -114,5 +132,5 @@
             </tbody>
         </table>
     </div>
-
+    
 </div>
