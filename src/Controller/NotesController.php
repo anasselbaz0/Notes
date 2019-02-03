@@ -254,6 +254,10 @@ class NotesController extends AppController
                         $groupes_ids[] = $a->id;
                     }
                 }
+                if ($groupes_ids == null) {
+                    $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->loadModel('Modules');
                 $all_modules = $this->Modules->find();
                 foreach ($all_modules as $a) {
@@ -611,6 +615,10 @@ class NotesController extends AppController
                         $groupes_ids[] = $a->id;
                     }
                 }
+                if ($groupes_ids == null) {
+                    $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
+                }
                 $this->loadModel('Modules');
                 $all_modules = $this->Modules->find();
                 foreach ($all_modules as $a) {
@@ -618,11 +626,12 @@ class NotesController extends AppController
                         $modules_labels[] = $a->libile;
                     }
                 }
-                $etape = 3;
-                if (sizeof($modules_labels) == 0) {
+                if ($modules_labels == null) {
                     $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
+                $etape = 3;
+
                 $this->set(compact(
                     'filieres_labels',
                     'niveaux_labels',
@@ -903,6 +912,10 @@ class NotesController extends AppController
                 if (in_array($a->id, $etudiants_ids)) {
                     $my_etudiants[] = $a;
                 }
+            }
+            if (sizeof($my_notes) == 0) {
+                $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
+                return $this->redirect(['action' => 'preparationAffichage']);
             }
             $max = $my_notes[0]->note;
             $min = $my_notes[0]->note;
