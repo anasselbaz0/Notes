@@ -455,6 +455,10 @@ class NotesController extends AppController
                     $my_etudiants[] = $a;
                 }
             }
+            if (sizeof($my_notes) == 0) {
+                $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
+                return $this->redirect(['action' => 'preparationAffichage']);
+            }
             $max = $my_notes[0]->note;
             $min = $my_notes[0]->note;
             $somme = 0;
@@ -811,6 +815,10 @@ class NotesController extends AppController
                 if (in_array($a->id, $etudiants_ids)) {
                     $my_etudiants[] = $a;
                 }
+            }
+            if (sizeof($my_notes) == 0) {
+                $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
+                return $this->redirect(['action' => 'preparationAffichage']);
             }
             $max = $my_notes[0]->note;
             $min = $my_notes[0]->note;
