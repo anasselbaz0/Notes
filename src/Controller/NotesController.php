@@ -248,13 +248,16 @@ class NotesController extends AppController
                     $niveaux_labels[] = $a->libile;
                 }
                 $this->loadModel('Groupes');
+                $groupes_ids = array();
                 $all_groupes = $this->Groupes->find();
                 foreach ($all_groupes as $a) {
                     if ($a->niveaus_id == $n && $a->filiere_id == $f) {
                         $groupes_ids[] = $a->id;
                     }
                 }
-                if ($groupes_ids == null) {
+                // debug($groupes_ids);
+                // die();
+                if (sizeof($groupes_ids) == 0) {
                     $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
                     return $this->redirect(['action' => 'preparationAffichage']);
                 }
@@ -442,12 +445,13 @@ class NotesController extends AppController
                     break;
                 }
             }
+            $my_etudiers = array();
             foreach ($all_etudiers as $a) {
                 if ($a->element_id == $e) {
                     $my_etudiers[] = $a;
                 }
             }
-            if (!isset($my_etudiers)) {
+            if (sizeof($my_etudiers) == 0) {
                 $this->Flash->error(__("Aucune note n'est saisie dans cet élement!"));
                 return $this->redirect(['action' => 'preparationAffichage']);
             }
@@ -608,12 +612,17 @@ class NotesController extends AppController
                 foreach ($all_niveaux as $a) {
                     $niveaux_labels[] = $a->libile;
                 }
+                $groupes_ids = array();
                 $this->loadModel('Groupes');
                 $all_groupes = $this->Groupes->find();
                 foreach ($all_groupes as $a) {
                     if ($a->niveaus_id == $n && $a->filiere_id == $f) {
                         $groupes_ids[] = $a->id;
                     }
+                }
+                if (sizeof($groupes_ids) == 0) {
+                    $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
+                    return $this->redirect(['action' => 'preparationAffichage']);
                 }
                 if ($groupes_ids == null) {
                     $this->Flash->error(__('Aucun module est enregistré pour ce choix!'));
@@ -812,10 +821,15 @@ class NotesController extends AppController
                     break;
                 }
             }
+            $my_etudiers = array();
             foreach ($all_etudiers as $a) {
                 if ($a->element_id == $e) {
                     $my_etudiers[] = $a;
                 }
+            }
+            if (sizeof($my_etudiers) == 0) {
+                $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
+                return $this->redirect(['action' => 'preparationSaisie']);
             }
             foreach ($my_etudiers as $a) {
                 $etudiants_ids[] = $a->etudiant_id;
@@ -825,9 +839,11 @@ class NotesController extends AppController
                     $my_etudiants[] = $a;
                 }
             }
+            // debug($my_notes);
+            // die();
             if (sizeof($my_notes) == 0) {
                 $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
-                return $this->redirect(['action' => 'preparationAffichage']);
+                return $this->redirect(['action' => 'preparationSaisie']);
             }
             $max = $my_notes[0]->note;
             $min = $my_notes[0]->note;
@@ -915,7 +931,7 @@ class NotesController extends AppController
             }
             if (sizeof($my_notes) == 0) {
                 $this->Flash->error(__('Aucune note est enregistrée pour ce choix!'));
-                return $this->redirect(['action' => 'preparationAffichage']);
+                return $this->redirect(['action' => 'preparationSaisie']);
             }
             $max = $my_notes[0]->note;
             $min = $my_notes[0]->note;
@@ -972,5 +988,56 @@ class NotesController extends AppController
         }
     }
 
+    public function affichageEtudiant()
+    {
+        //if (isset($this->Auth->user('id'))) {
+            //$idEtudiant = $this->Auth->user('id');
+            $idEtudiant = 2;
+            $this->loadModel('Etudiants');
+            $this->loadModel('Etudiers');
+            $this->loadModel('Elements');
+            $this->loadModel('Modules');
+            $etudiants = $this->Etudiants->find();
+            $elements = $this->Elements->find();
+            $modules = $this->Modules->find();
+            $etudiant = null;
+            foreach ($etudiants as $a) {
+                if ($a->id == $idEtudiant) $etudiant = $a;
+            }
+            $my_etudierss = $this->Etudiers->find()->where(['etudiant_id' => $idEtudiant]);
+            $my_etudiers = array();
+            $my_notes = array();
+            $nom_modules = array();
+            $nom_elements = array();
+            foreach ($my_etudierss as $a) $my_etudiers[] = $a;
+            $notes = $this->Notes->find();
+            $elements_ids = array();
+            foreach ($my_etudierss as $a) {
+                foreach ($notes as $b) {
+                    if($b->etudier_id == $a->id){
+                        $my_notes[] = $b;
+                        $elements_ids[] = $b->element_id;
+                    }
+                }
+            }
+            $modules_ids = array();
+            for ($i=0; $i < sizeof($elements_ids); $i++) { 
+                foreach ($elements as $e) {
+                    if($e->id == $elements_ids[$i]){
+                        $nom_elements[] = $e->libile;
+                        $modules_ids[] = $e->module_id;
+                    }
+                }
+            }
+            for ($i=0; $i < sizeof($modules_ids); $i++) { 
+                foreach ($modules as $m) {
+                    if($m->id == $modules_ids[$i]){
+                        $nom_modules[] = $m->libile;
+                    }
+                }
+            }
+            $this->set(compact('my_notes', 'my_etudiers', 'etudiant', 'nom_modules', 'nom_elements'));
+        //}
+    }
 
 }
